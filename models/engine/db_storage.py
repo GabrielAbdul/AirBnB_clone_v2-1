@@ -79,7 +79,7 @@ class DBStorage:
        '''method to retrieve one object by classname and id'''
        if not cls or not id:
            return None
-       classes = storage.all(cls)
+       classes = self.all(cls)
        for obj in classes:
            if id in obj:
                return obj
@@ -88,5 +88,5 @@ class DBStorage:
     def count(self, cls=None):
         '''method to retrieve the number of objects in storage based on cls'''
         if cls is None:
-            return len([obj for obj in storage.all()])
-        return len([obj for obj in storage.all(cls)])
+            return len([obj for obj in self.all()])
+        return len([obj for obj in self.all(cls)])
