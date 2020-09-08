@@ -34,7 +34,8 @@ def users_no_id():
         return(jsonify(new_user.to_dict()), 201)
 
 
-@app_views.route('/users/<id>', strict_slashes=False, methods=["GET","PUT", "DELETE"])
+@app_views.route('/users/<id>', strict_slashes=False,
+                 methods=["GET", "PUT", "DELETE"])
 def users_with_id(id):
     obj = storage.get('User', id)
     if obj is None:
@@ -56,7 +57,7 @@ def users_with_id(id):
         if j_obj is None:
             abort(400, 'Not a JSON')
         # List of objects to be ignored on iteration
-        ignore_list = ['id','created_at','updated_at']
+        ignore_list = ['id', 'created_at', 'updated_at']
         # create dictionary of items to be updated
         bounce = {k: v for k, v in j_obj.items() if k not in ignore_list}
         # iter. across dict of items to be updated; setattr to update class obj
