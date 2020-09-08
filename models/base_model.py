@@ -68,6 +68,9 @@ class BaseModel:
         new_dict["__class__"] = self.__class__.__name__
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
+        # if type = user pop the password
+        if models.storage_t == "db" and self.__class__.__name__ == "User":
+            new_dict.pop("password", None)
         return new_dict
 
     def delete(self):

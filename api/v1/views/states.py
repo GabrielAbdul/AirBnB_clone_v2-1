@@ -29,7 +29,7 @@ def states_no_id():
             abort(400, 'Missing name')
         new_state = State(**j_obj)
         new_state.save()
-        return(jsonify(new_object.to_dict()), 201)
+        return(jsonify(new_state.to_dict()), 201)
 
 
 @app_views.route('/states/<id>',
