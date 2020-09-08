@@ -25,15 +25,13 @@ def users_no_id():
         if j_obj is None:
             abort(400, 'Not a JSON')
         # no name check
-        if j_obj.get('name') is None:
-            abort(400, 'Missing name')
         if j_obj.get('email') is None:
             abort(400, 'Missing email')
         if j_obj.get('password') is None:
             abort(400, 'Missing password')
         new_user = User(**j_obj)
         new_user.save()
-        return(jsonify(new_object.to_dict()), 201)
+        return(jsonify(new_user.to_dict()), 201)
 
 
 @app_views.route('/users/<id>', strict_slashes=False, methods=["GET","PUT", "DELETE"])
