@@ -33,7 +33,7 @@ def amenities_no_id():
 
 
 @app_views.route('/amenities/<id>', strict_slashes=False,
-                 methods=["GET","PUT", "DELETE"])
+                 methods=["GET", "PUT", "DELETE"])
 def amenites_with_id(id):
     obj = storage.get('Amenity', id)
     if obj is None:
@@ -55,7 +55,7 @@ def amenites_with_id(id):
         if j_obj is None:
             abort(400, 'Not a JSON')
         # List of objects to be ignored on iteration
-        ignore_list = ['id','created_at','updated_at', ]
+        ignore_list = ['id', 'created_at', 'updated_at']
         # create dictionary of items to be updated
         bounce = {k: v for k, v in j_obj.items() if k not in ignore_list}
         # iter. across dict of items to be updated; setattr to update class obj

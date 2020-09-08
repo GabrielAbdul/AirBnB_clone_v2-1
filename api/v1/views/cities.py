@@ -43,7 +43,7 @@ def cities_no_id(state_id=None):
 
 
 @app_views.route('/cities/<id>',
-                 strict_slashes=False, methods=["GET","PUT", "DELETE"])
+                 strict_slashes=False, methods=["GET", "PUT", "DELETE"])
 def cities_with_id(id):
     obj = storage.get('City', id)
     if obj is None:
@@ -65,7 +65,7 @@ def cities_with_id(id):
         if j_obj is None:
             abort(400, 'Not a JSON')
         # List of objects to be ignored on iteration
-        ignore_list = ['id','created_at','updated_at','state_id']
+        ignore_list = ['id', 'created_at', 'updated_at', 'state_id']
         # create dictionary of items to be updated
         bounce = {k: v for k, v in j_obj.items() if k not in ignore_list}
         # iter. across dict of items to be updated; setattr to update class obj
