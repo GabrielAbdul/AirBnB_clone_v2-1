@@ -22,7 +22,7 @@ def reviews_no_id(place_id=None):
     if request.method == "GET":
         reviews = storage.all('Review')
         list_of_reviews = [c_obj.to_dict() for c_obj in reviews.values()
-                          if c_obj.place_id == place_id]
+                           if c_obj.place_id == place_id]
         return(jsonify(list_of_reviews))
 
     # Create
@@ -42,7 +42,7 @@ def reviews_no_id(place_id=None):
 
 
 @app_views.route('/reviews/<id>',
-                 strict_slashes=False, methods=["GET","PUT", "DELETE"])
+                 strict_slashes=False, methods=["GET", "PUT", "DELETE"])
 def reviews_with_id(id):
     obj = storage.get('Review', id)
     if obj is None:
@@ -64,7 +64,7 @@ def reviews_with_id(id):
         if j_obj is None:
             abort(400, 'Not a JSON')
         # List of objects to be ignored on iteration
-        ignore_list = ['id','created_at','updated_at','place_id']
+        ignore_list = ['id', 'created_at', 'updated_at', 'place_id']
         # create dictionary of items to be updated
         bounce = {k: v for k, v in j_obj.items() if k not in ignore_list}
         # iter. across dict of items to be updated; setattr to update class obj
