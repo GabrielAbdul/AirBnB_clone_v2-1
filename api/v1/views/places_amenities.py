@@ -8,7 +8,7 @@ from models.review import Review
 
 
 @app_views.route('/places/<place_id>/amenities', strict_slashes=False,
-                 methods=['GET', 'POST'])
+                 methods=['GET'])
 def place_amenities_no_id(place_id=None):
     '''returns json object and either gets or posts'''
     # Call state object
@@ -20,35 +20,17 @@ def place_amenities_no_id(place_id=None):
 
     # Read
     if request.method == "GET":
-        reviews = storage.all('Review')
+        amenities = storage.all('Amenity')
         list_of_reviews = [c_obj.to_dict() for c_obj in reviews.values()
                            if c_obj.place_id == place_id]
         return(jsonify(list_of_reviews))
-
-    # Create
-    if request.method == 'POST':
-        j_obj = request.get_json()
-        if j_obj is None:
-            abort(400, 'Not a JSON')
-        if j_obj.get('user_id') is None:
-            abort(400, 'Missing user_id')
-        user_id = j_obj.get('user_id')
-        user_obj = storage.get("User", user_id)
-        if user_obj is None:
-            abort(404)
-        if j_obj.get('text') is None:
-            abort(400, 'Missing text')
-        j_obj['place_id'] = place_id
-        review = Review(**j_obj)
-        review.save()
-        return jsonify(review.to_dict()), 201
 
 
 @app_views.route('/places/<place_id>/amenities/<amenity_id>',
                  methods=['DELETE', 'POST'], strict_slashes=False)
 def amenities_by_places(place_id=None, amenity_id=None):
     '''method to interact with amenitiy objects'''
-    if not place_id or not amenity_id:
+    if place_id is None or amenity_id is None:
         abort(404)
 
     # retrieve all places and amenities
