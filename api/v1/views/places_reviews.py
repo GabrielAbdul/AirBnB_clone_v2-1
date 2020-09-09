@@ -25,26 +25,29 @@ def reviews_no_id(place_id=None):
                            if c_obj.place_id == place_id]
         return(jsonify(list_of_reviews))
 
-    if 'POST' in request.method:
-        data_received = request.get_json()
-        if not data_received:
+    # Create
+    if request.method == 'POST':
+        j_obj = request.get_json()
+        if j_obj is None:
             abort(400, 'Not a JSON')
-        user_id = getattr('user_id', data_recieved)
-        if not user_id:
+        if j_obj.get('user_id') is None:
             abort(400, 'Missing user_id')
-        if not storage.get('User', user_id):
+        user_id = j_obj.get('user_id')
+        user_obj = storage.get("User", user_id)
+        if user_obj is None:
             abort(404)
-        if 'text' not in data_received.keys():
+        if j_obj.get('text') is None:
             abort(400, 'Missing text')
-        review = Review(**data_received)
+        j_obj['place_id'] = place_id
+        review = Review(**j_obj)
         review.save()
-        return review, 201
+        return jsonify(review.to_dict()), 201
 
 
 @app_views.route('/reviews/<review_id>',
                  strict_slashes=False, methods=["GET", "PUT", "DELETE"])
-def reviews_with_id(id):
-    obj = storage.get('Review', id)
+def reviews_with_id(review_id):
+    obj = storage.get('Review', review_id)
     if obj is None:
         abort(404)
     # Read
@@ -64,7 +67,7 @@ def reviews_with_id(id):
         if j_obj is None:
             abort(400, 'Not a JSON')
         # List of objects to be ignored on iteration
-        ignore_list = ['id', 'created_at', 'updated_at', 'place_id']
+        ignore_list = ['id', 'created_at', 'updated_at', 'user_id', 'place_id']
         # create dictionary of items to be updated
         bounce = {k: v for k, v in j_obj.items() if k not in ignore_list}
         # iter. across dict of items to be updated; setattr to update class obj
