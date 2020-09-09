@@ -32,11 +32,15 @@ def places_no_id(city_id=None):
         # null/not json check
         if j_obj is None:
             abort(400, 'Not a JSON')
+        user_obj = storage.get("User", user_id)
         # no name check
         if j_obj.get('name') is None:
             abort(400, 'Missing name')
         if j_obj.get('user_id') is None:
             abort(400, 'Missing user_id')
+        user_obj = storage.get("User", j_obj.get('user_id'))
+        if user_obj is None:
+            abort(404)
         j_obj['city_id'] = city_id
         new_place = Place(**j_obj)
         new_place.save()
