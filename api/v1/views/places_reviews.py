@@ -7,7 +7,7 @@ from models import storage
 from models.review import Review
 
 
-@app_views.route('/cities/<place_id>/reviews', strict_slashes=False,
+@app_views.route('/places/<place_id>/reviews', strict_slashes=False,
                  methods=['GET', 'POST'])
 def reviews_no_id(place_id=None):
     '''returns json object and either gets or posts'''
@@ -41,7 +41,7 @@ def reviews_no_id(place_id=None):
         return(jsonify(new_review.to_dict()), 201)
 
 
-@app_views.route('/reviews/<id>',
+@app_views.route('/reviews/<review_id>',
                  strict_slashes=False, methods=["GET", "PUT", "DELETE"])
 def reviews_with_id(id):
     obj = storage.get('Review', id)
@@ -72,3 +72,23 @@ def reviews_with_id(id):
             setattr(obj, k, v)
         obj.save()
         return(jsonify(obj.to_dict()))
+
+
+@app_views.route('/places/<place_id>/reviews', methods=['GET', 'POST'],
+                 strict_slashes=False)
+def reviews_by_places(id):
+    '''creates and updates a review object through the place relationship'''
+    if 'POST' in request.method:
+        data_received = request.get_json()
+        if not data_received:
+            abort(400, 'Not a JSON')
+        user_id = getattr('user_id', data_recieved)
+        if not user_id:
+            abort(400, 'Missing user_id')
+        if not storage.get('User', user_id):
+            abort(404)
+        if 'text' not in data_received.keys():
+            abort(400, 'Missing text')
+        review = Review(**data_received)
+        review.save()
+        return review, 201
