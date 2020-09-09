@@ -9,7 +9,7 @@ from models.review import Review
 
 @app_views.route('/places/<place_id>/amenities', strict_slashes=False,
                  methods=['GET', 'POST'])
-def reviews_no_id(place_id=None):
+def place_amenities_no_id(place_id=None):
     '''returns json object and either gets or posts'''
     # Call state object
     place_obj = storage.get('Place', place_id)
