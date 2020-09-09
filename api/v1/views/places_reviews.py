@@ -25,20 +25,20 @@ def reviews_no_id(place_id=None):
                            if c_obj.place_id == place_id]
         return(jsonify(list_of_reviews))
 
-    # Create
-    if request.method == "POST":
-        # convert to json
-        j_obj = request.get_json()
-        # null/not json check
-        if j_obj is None:
+    if 'POST' in request.method:
+        data_received = request.get_json()
+        if not data_received:
             abort(400, 'Not a JSON')
-        # no name check
-        if j_obj.get('name') is None:
-            abort(400, 'Missing name')
-        j_obj['place_id'] = place_id
-        new_review = Review(**j_obj)
-        new_review.save()
-        return(jsonify(new_review.to_dict()), 201)
+        user_id = getattr('user_id', data_recieved)
+        if not user_id:
+            abort(400, 'Missing user_id')
+        if not storage.get('User', user_id):
+            abort(404)
+        if 'text' not in data_received.keys():
+            abort(400, 'Missing text')
+        review = Review(**data_received)
+        review.save()
+        return review, 201
 
 
 @app_views.route('/reviews/<review_id>',
@@ -72,23 +72,3 @@ def reviews_with_id(id):
             setattr(obj, k, v)
         obj.save()
         return(jsonify(obj.to_dict()))
-
-
-@app_views.route('/places/<place_id>/reviews', methods=['GET', 'POST'],
-                 strict_slashes=False)
-def reviews_by_places(id):
-    '''creates and updates a review object through the place relationship'''
-    if 'POST' in request.method:
-        data_received = request.get_json()
-        if not data_received:
-            abort(400, 'Not a JSON')
-        user_id = getattr('user_id', data_recieved)
-        if not user_id:
-            abort(400, 'Missing user_id')
-        if not storage.get('User', user_id):
-            abort(404)
-        if 'text' not in data_received.keys():
-            abort(400, 'Missing text')
-        review = Review(**data_received)
-        review.save()
-        return review, 201
