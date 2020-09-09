@@ -49,7 +49,7 @@ def reviews_no_id(place_id=None):
 def amenities_by_places(place_id=None, amenity_id=None):
     '''method to interact with amenitiy objects'''
     if not place_id or not amenity_id:
-        return 404
+        abort(404)
 
     # retrieve all places and amenities
     places = storage.all('Place')
@@ -60,7 +60,7 @@ def amenities_by_places(place_id=None, amenity_id=None):
     valid_amenity_ids = list(map(lambda x: x.split('.')[1], amenities.keys()))
 
     if place_id not in valid_place_ids or amenity_id not in valid_amenity_ids:
-        return 404
+        abort(404)
 
     # retrieve amenity and place obj that corresponds to input id
     amenity = storage.get('Amenity', amenity_id)
@@ -69,26 +69,26 @@ def amenities_by_places(place_id=None, amenity_id=None):
     if 'db' in storage_t:
         if 'DELETE' in request.methods:
             if amenity not in place.amenities:
-                return 404
+                abort(404)
             place.amenities.remove(amenity)
             place.save()
             return jsonify({})
         elif 'POST' in request.methods:
             if amenity in place.amenities:
-                return 202
+                abort(202)
             place.amenities.append(amenity)
             place.save()
             return jsonify(amenity.to_dict()), 201
     else:
         if 'DELETE' in request.methods:
             if amenity not in place.amenity_ids:
-                return 404
+                abort(404)
             place.amenity_ids.remove(amenity)
             place.save()
             return jsonify({})
         elif 'POST' in request.methods:
             if amenity in place.amenity_ids:
-                return 202
+                abort(202)
             place.amenity_ids.append(amenity)
             place.save()
             return jsonify(amenity.to_dict()), 201
