@@ -35,6 +35,8 @@ def places_no_id(city_id=None):
         # no name check
         if j_obj.get('name') is None:
             abort(400, 'Missing name')
+        if j_obj.get('user_id') is None:
+            abort(400, 'Missing user_id')
         j_obj['city_id'] = city_id
         new_place = Place(**j_obj)
         new_place.save()
@@ -42,7 +44,7 @@ def places_no_id(city_id=None):
 
 
 @app_views.route('/places/<id>',
-                 strict_slashes=False, methods=["GET","PUT", "DELETE"])
+                 strict_slashes=False, methods=["GET", "PUT", "DELETE"])
 def places_with_id(id):
     obj = storage.get('Place', id)
     if obj is None:
@@ -64,7 +66,7 @@ def places_with_id(id):
         if j_obj is None:
             abort(400, 'Not a JSON')
         # List of objects to be ignored on iteration
-        ignore_list = ['id','created_at','updated_at','city_id']
+        ignore_list = ['id', 'city_id', 'created_at', 'updated_at', 'city_id']
         # create dictionary of items to be updated
         bounce = {k: v for k, v in j_obj.items() if k not in ignore_list}
         # iter. across dict of items to be updated; setattr to update class obj
