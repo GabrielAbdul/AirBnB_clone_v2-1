@@ -32,6 +32,6 @@ class User(BaseModel, Base):
             if raw_pwd is not None:
                 sec_pwd = hashlib.md5()
                 sec_pwd.update(raw_pwd.encode("utf-8"))
-                hash_pwd = sec_pwd.digest()
+                hash_pwd = sec_pwd.hexdigest()
                 setattr(self, "password", hash_pwd)
         super().__init__(*args, **kwargs)
