@@ -5,6 +5,7 @@ from flask import jsonify, request, abort
 from models import storage, storage_t
 from models.review import Review
 
+
 @app_views.route('/places/<place_id>/amenities', strict_slashes=False,
                  methods=['GET', 'POST'])
 def place_amenities_no_id(place_id=None):
@@ -19,6 +20,7 @@ def place_amenities_no_id(place_id=None):
         amenities = storage.all('Amenity')
         list_of_amens = [c_obj.to_dict() for c_obj in place_obj.amenities]
         return(jsonify(list_of_amens))
+
 
 @app_views.route('/places/<place_id>/amenities/<amenity_id>',
                  methods=['DELETE', 'POST'], strict_slashes=False)
